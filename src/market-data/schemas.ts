@@ -29,6 +29,10 @@ export const marketDataResponseSchema = v.object({
   symbol: v.string(),
   period: v.string(),
   interval: v.string(),
+  currentPrice: v.optional(v.number()),
+  previousClose: v.optional(v.number()),
+  fiftyTwoWeekHigh: v.optional(v.number()),
+  fiftyTwoWeekLow: v.optional(v.number()),
   data: v.array(ohlcvSchema),
   metadata: v.optional(
     v.object({

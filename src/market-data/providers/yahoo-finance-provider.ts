@@ -41,6 +41,10 @@ export class YahooFinanceProvider implements MarketDataProvider {
         symbol: request.symbol,
         period: request.period,
         interval: request.interval,
+        currentPrice: result.meta?.regularMarketPrice,
+        previousClose: result.meta?.chartPreviousClose,
+        fiftyTwoWeekHigh: result.meta?.fiftyTwoWeekHigh,
+        fiftyTwoWeekLow: result.meta?.fiftyTwoWeekLow,
         data,
         metadata: {
           provider: 'yahoo-finance',

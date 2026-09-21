@@ -18,6 +18,10 @@ export interface MarketDataResponse {
   symbol: string;
   period: string;
   interval: string;
+  currentPrice?: number;
+  previousClose?: number;
+  fiftyTwoWeekHigh?: number;
+  fiftyTwoWeekLow?: number;
   data: OHLCV[];
   metadata?: {
     provider: string;
