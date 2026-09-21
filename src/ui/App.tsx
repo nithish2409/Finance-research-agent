@@ -1,96 +1,139 @@
 import { useFlueAgent } from '@flue/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { SingleStockReport } from './components/SingleStockReport';
+import { ComparisonReport } from './components/ComparisonReport';
+import { LoadingState, ErrorState } from './components/CommonStates';
+import { extractStructuredData, validateSingleInput, validateComparisonInput } from './logic';
 
 export function App() {
-  const [stockSymbol, setStockSymbol] = useState('');
-  const [inputMessage, setInputMessage] = useState('');
+  const [mode, setMode] = useState<'single' | 'compare'>('single');
+  const [symbolA, setSymbolA] = useState('');
+  const [symbolB, setSymbolB] = useState('');
+  const [validationError, setValidationError] = useState<string | null>(null);
 
-  // The local-dev suffix is the chosen conversation ID.
-  // This matches the app.ts mount of '/api/agents/researcher' 
-  // plus the conversational instance ID.
+  // Use a fixed or session ID for local-dev.
   const agent = useFlueAgent({
     url: '/api/agents/researcher/local-dev'
   });
 
-  async function handleSubmit(e: React.FormEvent) {
+  // Extract structured data from agent's messages
+  const { finalReport, comparisonResult } = extractStructuredData(agent.messages);
+
+  // Clear agent state if user switches mode
+  useEffect(() => {
+    setValidationError(null);
+  }, [mode]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputMessage.trim()) return;
-    
-    const message = inputMessage.trim();
-    setInputMessage('');
-    
-    // Send message to the Flue agent
-    await agent.sendMessage(message);
-  }
+    setValidationError(null);
+
+    if (mode === 'single') {
+      const err = validateSingleInput(symbolA);
+      if (err) return setValidationError(err);
+      await agent.sendMessage(`Analyze ${symbolA.trim()}`);
+    } else {
+      const err = validateComparisonInput(symbolA, symbolB);
+      if (err) return setValidationError(err);
+      await agent.sendMessage(`Compare ${symbolA.trim()} and ${symbolB.trim()}`);
+    }
+  };
+
+  const isRunning = agent.status === 'streaming';
 
   return (
-    <div className="flex flex-col h-full max-w-4xl mx-auto p-6 font-sans">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800">Finance Research Agent</h1>
-        <p className="text-slate-600 mt-2">
-          Phase 1 Foundation: UI and Agent connected. No finance functionality yet.
-        </p>
-      </header>
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans p-6">
+      <div className="max-w-5xl mx-auto">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Finance Research Agent</h1>
+          <p className="text-slate-600">Deterministic quantitative analysis and comparison</p>
+        </header>
 
-      <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-4">Stock Selection (Placeholder)</h2>
-        <div className="flex gap-4">
-          <input 
-            type="text" 
-            placeholder="e.g. RELIANCE.NS" 
-            value={stockSymbol}
-            onChange={(e) => setStockSymbol(e.target.value)}
-            className="border border-slate-300 rounded px-4 py-2 flex-1 outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button 
-            type="button" 
-            className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-2 rounded transition-colors"
-          >
-            Select
-          </button>
-        </div>
-      </div>
+        {/* Control Panel */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-200 mb-8">
+          <div className="flex gap-4 mb-6 border-b border-slate-100 pb-4">
+            <button
+              onClick={() => setMode('single')}
+              className={`px-4 py-2 font-medium rounded-md transition-colors ${mode === 'single' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50'}`}
+            >
+              Single Stock Analysis
+            </button>
+            <button
+              onClick={() => setMode('compare')}
+              className={`px-4 py-2 font-medium rounded-md transition-colors ${mode === 'compare' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50'}`}
+            >
+              Two-Stock Comparison
+            </button>
+          </div>
 
-      <div className="flex-1 bg-white rounded-lg shadow-sm border border-slate-200 flex flex-col overflow-hidden">
-        <div className="flex-1 p-6 overflow-y-auto bg-slate-50">
-          {agent.messages.length === 0 ? (
-            <p className="text-slate-400 text-center mt-10">No messages yet. Say hello!</p>
-          ) : (
-            agent.messages.map((msg, i) => (
-              <div key={msg.id || i} className={`mb-4 max-w-[80%] ${msg.role === 'user' ? 'ml-auto' : 'mr-auto'}`}>
-                <div className="text-xs text-slate-500 mb-1 capitalize">{msg.role}</div>
-                <div className={`p-4 rounded-lg ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none'}`}>
-                  {msg.parts.map((part, index) => 
-                    part.type === 'text' ? <p key={index}>{part.text}</p> : null
-                  )}
-                </div>
+          <form onSubmit={handleSubmit}>
+            <div className="flex flex-col md:flex-row gap-4 items-end">
+              <div className="flex-1 w-full">
+                <label className="block text-sm font-semibold text-slate-700 mb-1">
+                  {mode === 'single' ? 'Stock Symbol' : 'Stock A'}
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. RELIANCE.NS"
+                  value={symbolA}
+                  onChange={(e) => setSymbolA(e.target.value)}
+                  disabled={isRunning}
+                  className="w-full border border-slate-300 rounded-md px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-50 disabled:text-slate-400 uppercase"
+                />
               </div>
-            ))
-          )}
-          {agent.status === 'streaming' && (
-            <div className="text-sm text-slate-500 italic mt-2">Agent is typing...</div>
-          )}
-          {agent.status === 'error' && (
-            <div className="text-sm text-red-500 mt-2 p-2 bg-red-50 rounded">Connection Error. Is the Anthropic API key set?</div>
+
+              {mode === 'compare' && (
+                <div className="flex-1 w-full">
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Stock B</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. TCS.NS"
+                    value={symbolB}
+                    onChange={(e) => setSymbolB(e.target.value)}
+                    disabled={isRunning}
+                    className="w-full border border-slate-300 rounded-md px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-50 disabled:text-slate-400 uppercase"
+                  />
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isRunning}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-md font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[42px] w-full md:w-auto"
+              >
+                {mode === 'single' ? 'Analyze' : 'Compare'}
+              </button>
+            </div>
+          </form>
+
+          {validationError && (
+            <div className="mt-4 text-sm text-red-600 bg-red-50 border border-red-100 px-4 py-2 rounded">
+              {validationError}
+            </div>
           )}
         </div>
-        
-        <form onSubmit={handleSubmit} className="p-4 border-t border-slate-200 bg-white flex gap-4">
-          <input 
-            type="text" 
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            placeholder="Send a message to test connectivity..."
-            className="border border-slate-300 rounded px-4 py-2 flex-1 outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button 
-            type="submit"
-            disabled={!inputMessage.trim()}
-            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded font-medium transition-colors"
-          >
-            Send
-          </button>
-        </form>
+
+        {/* Results Area */}
+        <div className="space-y-6">
+          {isRunning && <LoadingState />}
+
+          {agent.status === 'error' && (
+            <ErrorState message="Connection to the research agent failed. Check network or API keys." />
+          )}
+
+          {!isRunning && mode === 'single' && finalReport && (
+            <SingleStockReport report={finalReport} />
+          )}
+
+          {!isRunning && mode === 'compare' && comparisonResult && (
+            <ComparisonReport result={comparisonResult} />
+          )}
+
+          {/* Debug raw output fallback if agent completes but returns no structure (malformed) */}
+          {!isRunning && agent.messages.length > 0 && !finalReport && !comparisonResult && !validationError && agent.status !== 'error' && (
+             <ErrorState message="The agent returned an unexpected or malformed response." />
+          )}
+        </div>
       </div>
     </div>
   );

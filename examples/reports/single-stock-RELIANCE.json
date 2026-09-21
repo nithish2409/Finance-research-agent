@@ -1,0 +1,21 @@
+{
+  "symbol": "RELIANCE.NS",
+  "currentPrice": 2450.50,
+  "dailyChange": 12.30,
+  "week52High": 2850.00,
+  "week52Low": 2100.00,
+  "volume": 5400000,
+  "bullishFactors": [
+    "Price is above SMA20 (2450.50 > 2410.20)",
+    "Price is above SMA50 (2450.50 > 2380.50)",
+    "RSI is neutral-bullish (58.4)"
+  ],
+  "riskFactors": [
+    "Volume is slightly below 30-day average"
+  ],
+  "technicalView": "The stock is in a short-term uptrend, trading above key moving averages.",
+  "recommendation": "BUY",
+  "confidence": 85,
+  "thesisSummary": "RELIANCE.NS demonstrates solid technical strength, trading above both its 20-day and 50-day moving averages. The RSI of 58 indicates bullish momentum without being overbought. Based on the calculated signal profile, the stock presents a favorable risk-reward setup.",
+  "disclaimer": "This report is for educational purposes only and does not constitute financial advice. The recommendation is generated deterministically based on technical signals and does not guarantee future performance."
+}

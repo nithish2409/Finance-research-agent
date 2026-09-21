@@ -1,0 +1,28 @@
+{
+  "symbolA": "RELIANCE.NS",
+  "symbolB": "TCS.NS",
+  "stockA": {
+    "symbol": "RELIANCE.NS",
+    "currentPrice": 2450.50,
+    "sma20": 2410.20,
+    "sma50": 2380.50,
+    "bullishSignalCount": 3,
+    "riskSignalCount": 1,
+    "recommendation": "BUY",
+    "score": 75,
+    "confidence": 85
+  },
+  "stockB": {
+    "symbol": "TCS.NS",
+    "currentPrice": 3820.00,
+    "sma20": 3850.10,
+    "sma50": 3900.20,
+    "bullishSignalCount": 0,
+    "riskSignalCount": 3,
+    "recommendation": "AVOID",
+    "score": 20,
+    "confidence": 100
+  },
+  "strongerProfile": "RELIANCE.NS",
+  "reasoning": "RELIANCE.NS has a higher deterministic score (75 vs 20) and a stronger recommendation category (BUY vs AVOID). Additionally, RELIANCE.NS demonstrates more bullish signals (3) compared to TCS.NS (0)."
+}

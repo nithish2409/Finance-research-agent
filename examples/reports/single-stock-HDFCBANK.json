@@ -1,0 +1,19 @@
+{
+  "symbol": "HDFCBANK.NS",
+  "currentPrice": 1640.75,
+  "dailyChange": 2.15,
+  "week52High": 1750.00,
+  "week52Low": 1380.00,
+  "volume": 14500000,
+  "bullishFactors": [
+    "Price has crossed above SMA20 (1640.75 > 1635.50)"
+  ],
+  "riskFactors": [
+    "Price remains below SMA50 (1640.75 < 1650.00)"
+  ],
+  "technicalView": "The stock is consolidating, showing early signs of a trend reversal.",
+  "recommendation": "HOLD",
+  "confidence": 90,
+  "thesisSummary": "HDFCBANK.NS is exhibiting a mixed technical profile. While it has recently reclaimed its 20-day moving average, it continues to trade below the 50-day moving average. The neutral RSI of 51 suggests consolidation. Investors should hold current positions and monitor for a decisive breakout.",
+  "disclaimer": "This report is for educational purposes only and does not constitute financial advice. The recommendation is generated deterministically based on technical signals and does not guarantee future performance."
+}

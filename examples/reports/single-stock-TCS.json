@@ -1,0 +1,19 @@
+{
+  "symbol": "TCS.NS",
+  "currentPrice": 3820.00,
+  "dailyChange": -15.40,
+  "week52High": 4150.00,
+  "week52Low": 3300.00,
+  "volume": 1200000,
+  "bullishFactors": [],
+  "riskFactors": [
+    "Price is below SMA20 (3820.00 < 3850.10)",
+    "Price is below SMA50 (3820.00 < 3900.20)",
+    "Negative momentum (-0.8%)"
+  ],
+  "technicalView": "The stock is experiencing a short-term downtrend and bearish momentum.",
+  "recommendation": "AVOID",
+  "confidence": 100,
+  "thesisSummary": "TCS.NS is currently showing significant technical weakness, trading below both the 20-day and 50-day moving averages. The lack of bullish factors and negative momentum indicate a sustained downward trend. It is recommended to avoid entry until technical support is clearly established.",
+  "disclaimer": "This report is for educational purposes only and does not constitute financial advice. The recommendation is generated deterministically based on technical signals and does not guarantee future performance."
+}

@@ -10,3 +10,5 @@ venv/
 assets/
 # Local project planning documents
 assets/
+# Flue local runtime database
+data/
