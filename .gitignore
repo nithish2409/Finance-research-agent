@@ -6,3 +6,7 @@ dist/
 .flue-vite.wrangler.jsonc
 .venv/
 venv/
+# Local project planning documents
+assets/
+# Local project planning documents
+assets/
