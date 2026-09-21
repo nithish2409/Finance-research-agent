@@ -1,4 +1,8 @@
 node_modules/
 dist/
 .env
-data/
+.env.*.local
+.flue-vite/
+.flue-vite.wrangler.jsonc
+.venv/
+venv/

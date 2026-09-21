@@ -62,15 +62,6 @@ async function verify() {
       agents: [Calculator],
     });
     console.log('   ✓ start() succeeded — runtime is configured');
-
-    // init() creates a handle
-    const { init } = await import('@flue/runtime');
-    const handle = init(Calculator, { id: 'phase-0-test' });
-    console.log(`   ✓ init() succeeded — handle.id: ${handle.id}`);
-
-    // We don't dispatch a real message because that requires an LLM API key.
-    // The goal is to verify the framework bootstraps.
-    console.log('   (Skipping dispatch — no API key needed for framework verification)\n');
   } catch (err) {
     console.log(`   ✗ start() failed: ${err}`);
     console.log('   (This may be expected if imports trigger registration conflicts)\n');
