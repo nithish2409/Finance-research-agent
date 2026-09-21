@@ -102,4 +102,5 @@ models/cache/
 # =========================
 reports/generated/
 
+# AI agent planning assets
 assets/
