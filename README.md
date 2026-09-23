@@ -67,10 +67,9 @@ All financial calculations are purely deterministic and executed via TypeScript 
 - **Comparison Engine**: Identifies the `strongerProfile` by comparing Recommendation Score, then Confidence (tie-breaker), and then Risk Signal Count.
 
 ## Data Source
-- The system supports both mocked and live market data.
-- The default execution uses `yahoo-finance2` to pull real, live EOD market data.
+- The application exclusively uses `yahoo-finance2` to pull real, live EOD market data.
 - If live data is incomplete (e.g. recent IPOs), the system natively supports incomplete-data paths.
-- Tests predominantly mock the data provider at the test-runner level (Vitest) to ensure deterministic pipelines.
+- For unit testing, the data provider is mocked at the test-runner level (Vitest) to ensure deterministic test pipelines without hitting external APIs.
 
 ## Setup and Commands
 
