@@ -96,6 +96,16 @@ All financial calculations are purely deterministic and executed via TypeScript 
    npm run build
    ```
 
+## Deliverables Mapping
+This repository successfully fulfills all assignment deliverables:
+1. **Working code in a separate branch**: Delivered via the `phase-8/ui-submission` branch (now merged to `main`).
+2. **README with setup instructions**: Covered in the [Setup and Commands](#setup-and-commands) section above.
+3. **At least 3 sample stock reports**: Located in `examples/reports/` (e.g., `single-stock-HDFCBANK.json`, `single-stock-RELIANCE.json`, `single-stock-TCS.json`).
+4. **One comparison report**: Located at `examples/reports/comparison-RELIANCE-TCS.json`.
+5. **Basic tests for indicator calculations**: Located in `src/tests/indicators/engine.test.ts`.
+6. **Short explanation of your agent workflow**: Covered in the [Architecture](#architecture) section above.
+7. **Notes on what is live data and what is mocked**: Covered in the [Data Source](#data-source) section above.
+
 ## Limitations
 - **No Trading/Execution**: The system cannot place orders or manage portfolios.
 - **No Intraday Analysis**: Data is strictly daily (EOD).
