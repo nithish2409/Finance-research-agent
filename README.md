@@ -70,7 +70,7 @@ All financial calculations are purely deterministic and executed via TypeScript 
 - The system supports both mocked and live market data.
 - The default execution uses `yahoo-finance2` to pull real, live EOD market data.
 - If live data is incomplete (e.g. recent IPOs), the system natively supports incomplete-data paths.
-- Tests predominantly use the offline Mock Provider to ensure deterministic pipelines.
+- Tests predominantly mock the data provider at the test-runner level (Vitest) to ensure deterministic pipelines.
 
 ## Setup and Commands
 
