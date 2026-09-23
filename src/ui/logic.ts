@@ -16,12 +16,23 @@ export function extractStructuredData(messages: any[]): {
         // The exact field name depends on Flue internals (toolName, name, tool_name, etc).
         // It might also be nested under result.output.
 
-        const isToolCallOrResult = part.type === 'tool-result' || part.type === 'tool_result' || part.type === 'tool-call' || part.type === 'tool_call';
+        const isToolCallOrResult = part.type === 'tool-result' || part.type === 'tool_result' || part.type === 'tool-call' || part.type === 'tool_call' || part.type === 'dynamic-tool';
         const name = part.name || part.toolName || (part.toolCall && part.toolCall.name) || (part.call && part.call.name);
 
         if (isToolCallOrResult) {
           const payload = part.result || part.output || part.args || (part.toolCall && part.toolCall.args) || (part.call && part.call.args);
-          const actualOutput = payload?.output || payload; // If the tool returned { output: ... }, it might be nested
+          let actualOutput = payload?.output || payload; // If the tool returned { output: ... }, it might be nested
+
+          if (typeof actualOutput === 'string') {
+            try {
+              actualOutput = JSON.parse(actualOutput);
+              if (actualOutput?.output) {
+                actualOutput = actualOutput.output;
+              }
+            } catch (e) {
+              // Not JSON, ignore
+            }
+          }
 
           if (name === 'produce_final_report' && actualOutput && actualOutput.symbol) {
             if (!finalReport) finalReport = actualOutput as FinalResearchReport;

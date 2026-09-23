@@ -34,8 +34,5 @@ function spaFallbackPlugin() {
 }
 
 export default defineConfig({
-  plugins: [spaFallbackPlugin(), tailwindcss(), react(), ...flue()],
-  ssr: {
-    noExternal: ['partial-json'],
-  },
+  plugins: [spaFallbackPlugin(), tailwindcss(), react(), ...flue()]
 });

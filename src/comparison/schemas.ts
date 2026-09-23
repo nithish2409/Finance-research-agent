@@ -16,6 +16,8 @@ export const stockComparisonSnapshotSchema = v.object({
   riskSignalCount: v.number(),
   sma20: v.nullable(v.number()),
   sma50: v.nullable(v.number()),
+  priceVsSma20: v.nullable(v.number()),
+  priceVsSma50: v.nullable(v.number()),
 });
 
 export const comparisonResultSchema = v.object({

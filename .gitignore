@@ -12,3 +12,11 @@ assets/
 assets/
 # Flue local runtime database
 data/
+
+# Local development/debug scripts
+scratch/
+src/tests/diagnostic-proxy.ts
+src/tests/test-ollama*.ts
+test-direct.js
+test-ollama.ts
+test-qwen-tool.ts

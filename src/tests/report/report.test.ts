@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as v from 'valibot';
 import { investmentThesisSchema, finalResearchReportSchema } from '../../report/schemas';
 import { generateInvestmentThesis } from '../../report/thesis';
@@ -9,6 +9,24 @@ import { MarketDataResponse } from '../../market-data/types';
 import { IndicatorResult } from '../../indicators/types';
 import { SignalAnalysisResult } from '../../signals/types';
 import { RecommendationResult } from '../../recommendation/types';
+
+vi.mock('../../market-data/providers/yahoo-finance-provider', () => {
+  return {
+    YahooFinanceProvider: class {
+      async getHistoricalData() {
+        return {
+          symbol: 'TCS.NS',
+          period: '1y',
+          interval: '1d',
+          data: [
+            { date: '2026-09-20', open: 3400, high: 3500, low: 3300, close: 3450, volume: 1000000 },
+            { date: '2026-09-21', open: 3450, high: 3550, low: 3400, close: 3500, volume: 1200000 },
+          ]
+        };
+      }
+    }
+  };
+});
 
 describe('Report Engine and Schemas', () => {
   const mockMarketData: MarketDataResponse = {
@@ -143,10 +161,7 @@ describe('Report Engine and Schemas', () => {
     it('generate_investment_thesis should accept structured inputs', async () => {
       const result = await generateInvestmentThesisTool.run({
         data: {
-          indicators: mockIndicators as any,
-          bullishFactors: mockBullish as any,
-          riskFactors: mockRisk as any,
-          recommendation: mockRecommendation as any,
+          symbol: 'TCS.NS',
           thesis: mockThesis as any,
         }
       } as any);
@@ -158,18 +173,14 @@ describe('Report Engine and Schemas', () => {
     it('produce_final_report should assemble report', async () => {
       const result = await produceFinalReportTool.run({
         data: {
-          marketData: mockMarketData as any,
-          indicators: mockIndicators as any,
-          bullishFactors: mockBullish as any,
-          riskFactors: mockRisk as any,
-          recommendation: mockRecommendation as any,
+          symbol: 'TCS.NS',
           thesis: mockThesis as any,
         }
       } as any);
 
       expect(result.output).toBeDefined();
       expect(() => v.parse(finalResearchReportSchema, result.output)).not.toThrow();
-      expect((result.output as any).recommendation).toBe('BUY');
+      expect((result.output as any).recommendation).toBe('WATCHLIST');
       expect((result.output as any).volume).toBe(1200000);
     });
   });

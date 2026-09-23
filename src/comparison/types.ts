@@ -15,6 +15,8 @@ export interface StockComparisonSnapshot {
   riskSignalCount: number;
   sma20: number | null;
   sma50: number | null;
+  priceVsSma20: number | null;
+  priceVsSma50: number | null;
 }
 
 export interface ComparisonResult {

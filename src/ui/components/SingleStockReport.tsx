@@ -4,7 +4,7 @@ export function SingleStockReport({ report }: { report: FinalResearchReport }) {
   const {
     symbol, currentPrice, dailyChange, week52High, week52Low, volume,
     bullishFactors, riskFactors, technicalView, recommendation, confidence,
-    thesisSummary, disclaimer
+    thesisSummary, volatility, disclaimer
   } = report;
 
   const colorMap: Record<string, string> = {
@@ -65,7 +65,17 @@ export function SingleStockReport({ report }: { report: FinalResearchReport }) {
           </div>
           <div className="p-4 bg-slate-50 rounded border border-slate-100">
             <div className="text-xs text-slate-500 uppercase">Technical View</div>
-            <div className="font-semibold text-sm truncate" title={technicalView}>{technicalView}</div>
+            <div className="font-semibold text-sm">{technicalView}</div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div className="p-4 bg-slate-50 rounded border border-slate-100">
+            <div className="text-xs text-slate-500 uppercase mb-1">Volatility</div>
+            <div className="font-bold text-xl text-slate-800">
+              {volatility !== null ? `${(volatility * 100).toFixed(1)}%` : 'Not available'}
+            </div>
+            <div className="text-xs text-slate-400 mt-1">20-day annualized</div>
           </div>
         </div>
 

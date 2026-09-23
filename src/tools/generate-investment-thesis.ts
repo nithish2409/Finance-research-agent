@@ -1,24 +1,21 @@
 import { defineTool } from '@flue/runtime';
 import { investmentThesisSchema } from '../report/schemas';
-import { generateInvestmentThesis } from '../report/thesis';
-import { indicatorResultSchema } from '../indicators/schemas';
-import { signalAnalysisResultSchema } from '../signals/schemas';
-import { recommendationResultSchema } from '../recommendation/schemas';
+import { normalizeTicker } from '../utils/ticker-normalization';
 import * as v from 'valibot';
+
+export const thesisCache = new Map<string, any>();
 
 export const generateInvestmentThesisTool = defineTool({
   name: 'generate_investment_thesis',
   description: 'Structures and validates the natural-language investment thesis synthesized by the LLM from the deterministic evidence.',
   input: v.object({
-    indicators: indicatorResultSchema,
-    bullishFactors: signalAnalysisResultSchema,
-    riskFactors: signalAnalysisResultSchema,
-    recommendation: recommendationResultSchema,
+    symbol: v.string(),
     thesis: investmentThesisSchema,
   }),
   output: investmentThesisSchema,
   async run({ data }) {
-    const result = generateInvestmentThesis(data.thesis as any);
-    return { output: result };
+    // The LLM writes the thesis, this tool just validates it matches the required structure
+    thesisCache.set(normalizeTicker(data.symbol), data.thesis);
+    return { output: data.thesis };
   },
 });

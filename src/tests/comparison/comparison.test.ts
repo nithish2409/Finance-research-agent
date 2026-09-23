@@ -20,6 +20,8 @@ describe('Comparison Engine', () => {
     riskSignalCount: 1,
     sma20: 145,
     sma50: 140,
+    priceVsSma20: 5,
+    priceVsSma50: 10,
   };
 
   test('Stronger profile logic - higher score wins', () => {
@@ -58,13 +60,15 @@ describe('Comparison Engine', () => {
   });
 
   test('Missing indicators are preserved', () => {
-    const snapA = { ...baseSnapshot, symbol: 'AAPL', currentPrice: null, sma20: null, sma50: null };
+    const snapA = { ...baseSnapshot, symbol: 'AAPL', currentPrice: null, sma20: null, sma50: null, priceVsSma20: null, priceVsSma50: null };
     const snapB = { ...baseSnapshot, symbol: 'MSFT' };
 
     const result = generateComparison(snapA, snapB);
     expect(result.stockA.currentPrice).toBeNull();
     expect(result.stockA.sma20).toBeNull();
     expect(result.stockA.sma50).toBeNull();
+    expect(result.stockA.priceVsSma20).toBeNull();
+    expect(result.stockA.priceVsSma50).toBeNull();
   });
 
   test('Recommendation preservation', () => {
@@ -103,7 +107,12 @@ describe('Comparison Schemas', () => {
 
 describe('Compare Stocks Tool', () => {
   test('Duplicate symbols are rejected by tool', async () => {
-    await expect(compareStocksTool.run({ data: { symbolA: 'AAPL', symbolB: 'AAPL' } } as any)).rejects.toThrow('must be different stocks');
+    const result = await compareStocksTool.run({ data: { symbolA: 'AAPL', symbolB: 'AAPL' } } as any);
+    expect(result.output.success).toBe(false);
+    if (!result.output.success) {
+      expect(result.output.error).toBe('INVALID_COMPARISON');
+      expect(result.output.message).toContain('must be different stocks');
+    }
   });
 
   test('Orchestrates correctly and derives signal counts from Phase 4 outputs', async () => {
@@ -129,13 +138,15 @@ describe('Compare Stocks Tool', () => {
 
     const result = await compareStocksTool.run({ data: { symbolA: 'AAPL', symbolB: 'MSFT' } } as any);
 
-    expect(result.output).toBeDefined();
+    expect(result.output.success).toBe(true);
     
-    const output = result.output as ComparisonResult;
-    expect(output.stockA.bullishSignalCount).toBe(3);
-    expect(output.stockA.riskSignalCount).toBe(1);
-    expect(output.stockB.bullishSignalCount).toBe(3);
-    expect(output.stockB.riskSignalCount).toBe(1);
+    if (result.output.success) {
+      const output = result.output.output as ComparisonResult;
+      expect(output.stockA.bullishSignalCount).toBe(3);
+      expect(output.stockA.riskSignalCount).toBe(1);
+      expect(output.stockB.bullishSignalCount).toBe(3);
+      expect(output.stockB.riskSignalCount).toBe(1);
+    }
 
     // Restore mocks
     marketDataSpy.mockRestore();

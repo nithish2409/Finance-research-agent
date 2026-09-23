@@ -4,4 +4,4 @@ import { sqlite } from '@flue/runtime/node';
 // they survive a restart. Swap in another adapter (Postgres, libSQL, ...)
 // when one host's SQLite file is no longer enough:
 // https://flueframework.com/docs/guide/database/
-export default sqlite('./data/flue.db');
+export default sqlite('./data/flue-test.db');

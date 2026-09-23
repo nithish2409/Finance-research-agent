@@ -23,5 +23,6 @@ export const finalResearchReportSchema = v.object({
   recommendation: recommendationCategorySchema,
   confidence: v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
   thesisSummary: v.string(),
+  volatility: v.nullable(v.number()),
   disclaimer: v.literal('This is only an educational mock analysis and not financial advice.'),
 });

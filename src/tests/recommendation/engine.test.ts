@@ -129,24 +129,34 @@ describe('Recommendation Engine', () => {
     expect(result.recommendation).toBe('BUY');
   });
 
-  it('K. Full confidence = 100', () => {
-    const result = generateRecommendation(completeIndicators, emptySignals, emptySignals);
+  it('K. Full confidence = 100 with strong unified evidence', () => {
+    const bullish: SignalAnalysisResult = {
+      symbol: 'TEST',
+      signals: [
+        { type: 'bullish', factor: '1', evidence: '', strength: 'strong' },
+        { type: 'bullish', factor: '2', evidence: '', strength: 'strong' },
+        { type: 'bullish', factor: '3', evidence: '', strength: 'moderate' },
+      ],
+    };
+    const result = generateRecommendation(completeIndicators, bullish, emptySignals);
     expect(result.confidence).toBe(100);
   });
 
-  it('L. Missing one confidence component (SMA20 missing -> 75)', () => {
+  it('L. Missing one confidence component (SMA20 missing -> 50 for neutral evidence)', () => {
     const ind: IndicatorResult = { ...completeIndicators, movingAverages: { sma20: null, sma50: 90 } };
     const result = generateRecommendation(ind, emptySignals, emptySignals);
-    expect(result.confidence).toBe(75);
+    // Completeness = 30, Consistency = 20 (neutral), Volume = 0 => 50
+    expect(result.confidence).toBe(50);
   });
 
-  it('M. Multiple missing confidence components (SMA20, Momentum missing -> 60)', () => {
+  it('M. Multiple missing confidence components (SMA20, Momentum missing -> 45 for neutral)', () => {
     const ind: IndicatorResult = { ...completeIndicators, movingAverages: { sma20: null, sma50: 90 }, momentum: 'Insufficient Data' };
     const result = generateRecommendation(ind, emptySignals, emptySignals);
-    expect(result.confidence).toBe(60);
+    // Completeness = 25, Consistency = 20, Volume = 0 => 45
+    expect(result.confidence).toBe(45);
   });
 
-  it('N. Zero confidence', () => {
+  it('N. Zero confidence (missing all historicals, highly conflicting signals)', () => {
     const ind: IndicatorResult = {
       symbol: 'TEST',
       currentPrice: 100,
@@ -156,8 +166,17 @@ describe('Recommendation Engine', () => {
       momentum: 'Insufficient Data',
       volatility: { proxyValue: null },
     };
-    const result = generateRecommendation(ind, emptySignals, emptySignals);
-    expect(result.confidence).toBe(0);
+    const bullish: SignalAnalysisResult = {
+      symbol: 'TEST',
+      signals: [{ type: 'bullish', factor: '1', evidence: '', strength: 'strong' }], // +3
+    };
+    const risk: SignalAnalysisResult = {
+      symbol: 'TEST',
+      signals: [{ type: 'risk', factor: '1', evidence: '', strength: 'strong' }], // -3
+    };
+    const result = generateRecommendation(ind, bullish, risk);
+    // Completeness = 0, Consistency = 0, Volume = Min(20, 6/8*20) = 15. Total = 15
+    expect(result.confidence).toBe(15);
   });
 
   it('O. Missing indicators do not create signals (handled by Phase 4, checked here to verify reasoning notes)', () => {

@@ -32,6 +32,7 @@ describe('UI Logic and State Validation', () => {
       recommendation: 'BUY',
       confidence: 90,
       thesisSummary: 'Solid company',
+      volatility: 0.22,
       disclaimer: 'This is only an educational mock analysis and not financial advice.'
     };
 
@@ -57,6 +58,47 @@ describe('UI Logic and State Validation', () => {
     expect(comparisonResult).toBeNull();
   });
 
+  it('extracts FinalResearchReport from stringified JSON agent messages', () => {
+    const mockReport: FinalResearchReport = {
+      symbol: 'AAPL',
+      currentPrice: 150,
+      dailyChange: 2.5,
+      week52High: 180,
+      week52Low: 120,
+      volume: 1000000,
+      bullishFactors: ['Good earnings'],
+      riskFactors: [],
+      technicalView: 'Bullish trend',
+      recommendation: 'BUY',
+      confidence: 90,
+      thesisSummary: 'Solid company',
+      volatility: 0.22,
+      disclaimer: 'This is only an educational mock analysis and not financial advice.'
+    };
+
+    const messages = [
+      {
+        parts: [
+          { type: 'text', text: 'Some text' }
+        ]
+      },
+      {
+        parts: [
+          {
+            type: 'tool-result',
+            name: 'produce_final_report',
+            result: JSON.stringify({ output: mockReport })
+          }
+        ]
+      }
+    ];
+
+    const { finalReport, comparisonResult } = extractStructuredData(messages);
+    expect(finalReport).toEqual(mockReport);
+    expect(comparisonResult).toBeNull();
+  });
+
+
   it('extracts ComparisonResult from agent messages', () => {
     const mockComparison: ComparisonResult = {
       symbolA: 'AAPL',
@@ -66,6 +108,8 @@ describe('UI Logic and State Validation', () => {
         currentPrice: 150,
         sma20: 145,
         sma50: 140,
+        priceVsSma20: 5,
+        priceVsSma50: 10,
         bullishSignalCount: 3,
         riskSignalCount: 1,
         recommendation: 'BUY',
@@ -77,6 +121,8 @@ describe('UI Logic and State Validation', () => {
         currentPrice: 300,
         sma20: 290,
         sma50: 280,
+        priceVsSma20: 10,
+        priceVsSma50: 20,
         bullishSignalCount: 4,
         riskSignalCount: 0,
         recommendation: 'BUY',

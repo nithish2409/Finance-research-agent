@@ -1,6 +1,9 @@
 'use agent';
-import { useModel, useTool } from '@flue/runtime';
+import { useModel, useTool, setProvider } from '@flue/runtime';
 import { addNumbers } from '../tools/add-numbers.ts';
+import { ollamaProvider } from '../providers/ollama';
+
+setProvider(ollamaProvider);
 
 /**
  * Phase 0 — minimal Flue agent for framework verification.
@@ -15,7 +18,7 @@ import { addNumbers } from '../tools/add-numbers.ts';
  * It is NOT a finance agent.
  */
 export function Calculator() {
-  useModel('anthropic/claude-haiku-4-5');
+  useModel('ollama/qwen3.5:9b');
   useTool(addNumbers);
-  return 'You are a calculator assistant. Use the add_numbers tool to add numbers when asked.';
+  return 'You are a calculator assistant. YOU MUST USE the add_numbers tool to add numbers when asked. DO NOT calculate the answer yourself.';
 }

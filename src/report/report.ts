@@ -31,6 +31,7 @@ export function produceFinalReport(
     recommendation: recommendation.recommendation,
     confidence: recommendation.confidence,
     thesisSummary: thesis.summary,
+    volatility: indicators.volatility ? indicators.volatility.proxyValue : null,
     disclaimer: 'This is only an educational mock analysis and not financial advice.',
   };
 }

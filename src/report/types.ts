@@ -22,5 +22,6 @@ export interface FinalResearchReport {
   recommendation: RecommendationCategory;
   confidence: number;
   thesisSummary: string;
+  volatility: number | null;
   disclaimer: 'This is only an educational mock analysis and not financial advice.';
 }

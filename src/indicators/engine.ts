@@ -145,7 +145,7 @@ function calculateVolatility(history: OHLCV[]): VolatilityResult {
   const stdDev = Math.sqrt(variance);
 
   // Return annualized proxy (approx 252 trading days)
-  const annualizedVol = stdDev * Math.sqrt(252) * 100; // in percentage
+  const annualizedVol = stdDev * Math.sqrt(252);
 
   return { proxyValue: annualizedVol };
 }
