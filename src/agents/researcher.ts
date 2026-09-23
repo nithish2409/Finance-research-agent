@@ -126,17 +126,17 @@ export function Researcher() {
         expectedTool = 'generate_recommendation';
       } else if (currentStep === 5) {
         expectedTool = 'generate_investment_thesis';
-        explicitBody = `The recommendation is complete. The next required action is the generate_investment_thesis tool. Do NOT write your thesis as plain text or think out loud. ACTUALLY EMIT the structured generate_investment_thesis tool call now.`;
+        explicitBody = `The recommendation is complete. The next required action is the generate_investment_thesis tool. ACTUALLY EMIT the structured generate_investment_thesis tool call now. DO NOT output any text before the tool call. DO NOT apologize.`;
 
         if (enforceCount > 0) {
-          explicitBody = `FAILURE: You output plain text instead of a tool call. I repeat: ONLY the actual structured tool call satisfies this step. ` + explicitBody;
+          explicitBody = `FAILURE: You output plain text instead of a tool call. I repeat: ONLY the actual structured tool call satisfies this step. DO NOT apologize. DO NOT say "I understand" or "Here is the tool call". Output NOTHING EXCEPT the raw JSON tool call. ` + explicitBody;
         }
       } else if (currentStep === 6) {
         expectedTool = 'produce_final_report';
-        explicitBody = `The investment thesis is already complete. The workflow is NOT complete. The next required action is the produce_final_report tool. Do not respond with explanatory text. Do not describe the tool call. Actually emit the structured produce_final_report tool call. You ONLY need to pass the symbol. Do not pass the thesis. Do not restart previous steps.`;
+        explicitBody = `The investment thesis is already complete. The workflow is NOT complete. The next required action is the produce_final_report tool. Actually emit the structured produce_final_report tool call. You ONLY need to pass the symbol. DO NOT output any text before the tool call. DO NOT apologize.`;
 
         if (enforceCount > 0) {
-          explicitBody = `FAILURE: You just output text instead of a tool call again. I repeat: ONLY the actual structured tool call satisfies this step. ` + explicitBody;
+          explicitBody = `FAILURE: You just output text instead of a tool call again. I repeat: ONLY the actual structured tool call satisfies this step. DO NOT apologize. DO NOT say "I understand". Output NOTHING EXCEPT the raw JSON tool call. ` + explicitBody;
         }
       }
 
@@ -187,5 +187,6 @@ export function Researcher() {
     8. Do not perform trading or order placement.
     9. OUTPUT HARDENING RULE: When synthesizing TWO-STOCK COMPARISON, you MUST NOT invent evaluative labels like "Winner Profile" or "Better stock" (use the deterministic "strongerProfile" if applicable).
     10. OUTPUT HARDENING RULE: You MUST NOT recalculate any derived numerical values (such as Price vs SMA). Use the deterministic values like "priceVsSma20" provided directly by the tool. Output numerical values EXACTLY as they appear in the tool results.
+    11. INPUT RULE: If the user provides a single word (e.g. 'idea', 'MARUTI'), assume it is a stock symbol and DO NOT ask for clarification. Immediately call fetch_market_data.
   `;
 }
