@@ -78,18 +78,27 @@ All financial calculations are purely deterministic and executed via TypeScript 
    npm install
    ```
 
-2. **Environment Configuration:**
-   Copy the example environment variables and configure your Anthropic/OpenAI API key for the Flue agent.
+2. **Local LLM Setup (Ollama):**
+   This application is configured to run entirely locally using Ollama and the `qwen3.5:9b` model.
+   - Install [Ollama](https://ollama.com/download) for your operating system.
+   - Open your terminal and download the required model:
+     ```bash
+     ollama pull qwen3.5:9b
+     ```
+   *(Note: The Ollama service must be running in the background for the agent to work).*
+
+3. **Environment Configuration:**
+   Copy the example environment variables file.
    ```bash
    cp .env.example .env
    ```
 
-3. **Run the development server:**
+4. **Run the development server:**
    ```bash
    npm run dev
    ```
 
-4. **Verification / Testing:**
+5. **Verification / Testing:**
    ```bash
    npm run typecheck
    npm run test
